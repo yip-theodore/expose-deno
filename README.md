@@ -1,8 +1,6 @@
 version 1.0 - 13 mai 2020 (2 ans)
 « en phase de développement très précoce »
 
-Typescript: [x]
-
 Modules standards (deno/std)
 > portage de la bibliothèque standard de Go
 
@@ -41,71 +39,14 @@ pas accès aux [système de fichier ou disque, environnement, réseau] sauf auto
 
 ## 10 Things I Regret About Node.js - Ryan Dahl - JSConf EU (2 juin 2018)
 The goal of Node was event driven HTTP servers.(?)
+> Both platforms share the same philosophy – event-driven architecture and asynchronous non-blocking tools to build web servers and services.
 
-5:04
-> 1 Regret: Not sticking with Promises.
- * I added promises to Node in June 2009 but foolishly removed them in February 2010.
- * Promises are the necessary abstraction for async/await.
- * It's possible unified usage of promises in Node would have sped the delivery of the eventual standartization and async/await.
- * Today Node's many async APIs are aging baldly due to this.
-[Pour l'asynchrone: promesse > callback]
-
-6:02
-> 2 Regret: Security
- * V8 by itself is a very good security sandbox
- * Had I put more thought into how that could be maintained for certain applications, Node colud have had some nice security guarantees not available in any other language.
- * Example: Your linter shouldn't get complete access to your computer and network.
-[La sécurité]
-
-7:01
-> 3 Regret: The Build System (GYP)
- * Build systems are very difficult and very important.
- * V8 (via Chrome) started using GYP and I switched Node over in tow.
- * Later Chrome dropped GYP for GN. Leaving Node the sole GYP user.
- * GYP is not an ugly internal interface either - it is exposed to anyone who's trying to bind to V8.
- * It's an awful experience for users. It's this non-JSON, Python adaptation of JSON.
- * The continued usage of GYP is the probably largest failure of Node core.
- * Instead of guiding users to write C++ bindings to V8, I should have provided a core foreign function interface (FFI)
- * Many people, early on, suggested moving to an FFI (namely Cantrill) and regrettably I ignored them.
- * (And I am extremely displeased that libuv adopted autotools.)
-[GYP pas bien]
-
-9:52
-> 4 Regret: package.json
- * Isaac, in NPM, invented package.json (for the most part)
- * But I sanctioned it by allowing Nod's require() to inspect package.json files for "main"
- * Ultimately I included NPM in the Node distribution, which much made it the defacto standard.
- * It's unfortunate that there is centralized (privately controlled even) repository for modules.
- * Allowing package.json gave rise to the concept of a "module" as a directory of files.
- * This is no a strictly necessary abstraction - and one that doesn't exist on the web.
- * package.json now includes all sorts of unnecessary information. License? Repository? Description? It's boilerplate noise.
- * If only relative files and URLs were used when importing, the path defines the version. There is no need to list dependencies.
-[Pas besoin de tout ça]
-
-12:35
-> 5 Regret: node_modules
- * It massively complicates the module resolution algorithm.
- * vendored-by-default has good intentions, but in practice just using $NODE_PATH wouldn't have precluded that.
- * Deviates greatly from browser semantics
- * It's my fault and I'm very sorry.
- * Unfortunately it's impossible to undo now.
-[Compliqué]
-
-14:00
-> 6 Regret: require("module") without the extension ".js"
- * Needlessly less explicit.
- * Not how browser javascript works. You cannot omit the ".js" in a script tag src attribute.
- * The module loader has to query the file system at multiple locations trying to guess what the user intended.
-[Pourquoi]
-
-14:40
-> 7 Regret: index.js
- * I thought it was cute, because there was index.html
- * It needlessly complicated the module loading system.
- * It became especially unnecessary after require supported package.json
-[Hum]
-
-15:28 Talks about Deno.
+- Pour l'asynchrone: promesse > callback
+- La sécurité
+- GYP pas bien
+- package.json: Pas besoin de tout ça
+- node_modules: Compliqué
+- without the extension ".js": Pourquoi
 
 
 ### Problèmes de Node.js
@@ -222,14 +163,66 @@ HTTP server listening on http://0.0.0.0:4500/
 
 
 
+## What’s Deno, and how is it different from Node.js?
+
+### Do I have to import it by the URL all the time?
+Constantly typing URLs would be very tedious. Thankfully, Deno presents us with two options to avoid doing that.
+The first option is to re-export the imported module from a local file, like so:
+```
+export { test, assertEquals } from "https://deno.land/std/testing/mod.ts";
+```
+Let’s say the file above is called local-test-utils.ts. Now, if we want to again make use of either test or assertEquals functions, we can just reference it like this:
+```
+import { test, assertEquals } from './local-test-utils.ts';
+```
+So it doesn’t really matter if it’s loaded from a URL or not.
+
+
+The second option is to create an imports map, which we specify in a JSON file:
+```
+{
+   "imports": {
+      "http/": "https://deno.land/std/http/"
+   }
+}
+```
+And then import it as such:
+```
+import { serve } from "http/server.ts";
+```
+In order for it to work, we have to tell Deno about the imports map by including the --importmap flag:
+```
+deno run --importmap=import_map.json hello_server.ts
+```
+
+### What about package versioning?
+Versioning has to be supported by the package provider, but from the client side it comes down to just setting the version number in the URL like so: https://unpkg.com/liltest@0.0.5/dist/liltest.js.
+
+> With it’s decentralized approach, it takes the necessary step of freeing the JavaScript ecosystem from the centralized package registry that is npm.
 
 
 
+---
+[![img](https://www.developpez.net/forums/attachments/p387662d1/a/a/a)](https://www.developpez.com/actu/208629/JSConf-Berlin-2018-moins-Ryan-Dahl-liste-10-erreurs-de-conception-sur-Node-js-et-devoile-son-prototype-deno/)
 
+---
 
+https://medium.com/lean-mind/deno-node-js-killer-718c8969770b
+#### What are the main issues with Node.js?
+##### Any program can write to the filesystem and the network
+##### Bad ageing async APIs
+##### The build system (GYP)
+##### The module system and npm
+#### Deno’s top features
+##### Security
+##### Module system
+##### TypeScript support out of the box
 
+---
 
+https://dev.to/lsagetlethias/deno-first-approach-4d0
 
+https://dev.to/search?q=deno
 
 
 
