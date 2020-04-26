@@ -1,69 +1,39 @@
-version 1.0 - 13 mai 2020 (2 ans)
-« en phase de développement très précoce »
+# Deno
+Ryan Dahl - Node.js (2009)
+10 Things I Regret About Node.js - Ryan Dahl - JSConf EU (2 juin 2018)
+version 1.0 - 13 mai 2020
 
+
+## Exécutable unique
+deno (15 Mo)
 Modules standards (deno/std)
-> portage de la bibliothèque standard de Go
 
-### Exécutable unique
-deno (15 Mo) + URL
-both runtime and package manager (?)
-
-### Sécurité
-pas accès aux [système de fichier ou disque, environnement, réseau] sauf autorisation explicite
+## Sécurité
+~~Node: full access~~ pas accès aux [système de fichier ou disque, environnement, réseau] sauf autorisation explicite
 `--allow-read=/tmp` ou `--allow-net=google.com`
 
-### Compatibilité avec le navigateur
-
-
-## Différences avec Node.js
-- n'utilise pas npm
-- ni le package.json
-- utilisation systématique des _promesses_
-- gestion des erreurs (stoppe toujours l’exécution sur des erreurs non capturées)
-- syntaxe import au lieu de require (ES Modules) + url HTTP
-- le code distant est mis en cache (indéfiniment sauf --reload)
-
-## Utilitaires / commandes
-- Inspecteur de dépendances (deno info)
-- Formateur de code (deno fmt)
-- bundling (deno bundle)
-- runtime type info (deno types)
-- Test (deno test)
-- Débogueur en ligne de commande (--debug)
-- linter (deno lint) coming soon
-
-
-## Ryan Dahl
-2009: Node.js
-
-
-## 10 Things I Regret About Node.js - Ryan Dahl - JSConf EU (2 juin 2018)
-The goal of Node was event driven HTTP servers.(?)
-> Both platforms share the same philosophy – event-driven architecture and asynchronous non-blocking tools to build web servers and services.
-
-- Pour l'asynchrone: promesse > callback
-- La sécurité
-- GYP pas bien
-- package.json: Pas besoin de tout ça
-- node_modules: Compliqué
-- without the extension ".js": Pourquoi
-
-
-### Problèmes de Node.js
-- les promesses
-- sécurité faible (?)
-- GYP
-
-- un système de modules mal conçu, avec une distribution centralisée ;
-- un grand nombre d'API héritées qui doivent être prises en charge ;
-- un manque de sécurité.
-
-## Deno c'est quoi?
+## Expérience développeur
+### Typescript
+### Utilitaires
+[info, fmt, bundle, types, test, --debug, lint]
+### Gestion des erreurs
+~~Node: erreurs non capturées ignorées~~ stoppe toujours l’exécution
+### Asynchrone
+~~Node: callback~~
+### Code source
+~~Node: GYP~~
 [V8, ~~Go~~>Rust, et Tokio]
-> Deno est un __runtime en ligne de commande pour exécuter du code Javascript__ et Typescript. Comme NodeJS, Deno est __construit sur le moteur Javascript de Chrome: V8__. __Il est écrit entièrement en Rust__ (Nodejs est écrit en C et C++) ce qui promet pas mal de performances. Enfin pour garantir de l’I/O asynchrone __l’event loop utilisée est Tokio__. C’est celle de Rust, l’équivalent de libuv en NodeJS. Si je te parle chinois, c’est que t’as pas lu mon [article sur le fonctionnement de Javascript](https://www.jesuisundev.com/comprendre-javascript-en-5-minutes) et je t’invite à le faire.
-> Il va télécharger puis compiler le serveur HTTP et ses dépendances au moment du runtime (?)
+~~Node: C C++~~ Rust
+~~Node: libuv~~ Tokio(Rust)
+
+## Gestion des dépendances
+~~Node: package.json~~
+~~Node: npm (distribution centralisée)~~
+syntaxe import au lieu de require (ES Modules) + url HTTP
+le code distant est mis en cache (indéfiniment sauf --reload)
 
 
+---
 
 ```javascript
 import { serve } from "https://deno.land/std@v0.36.0/http/server.ts";
@@ -106,22 +76,18 @@ The following runs a basic Deno script without any read/write/network permission
 ```
 deno run main.ts
 ```
-
 Explicit flags are required to expose corresponding permission:
 ```
 deno run --allow-read --allow-net main.ts
 ```
-
 To inspect the dependency tree of the script, use the `info` subcommand:
 ```
 deno info main.ts
 ```
-
 A basic hello-world program in Deno looks like the following (as in Node.js):
 ```
 console.log("Hello world");
 ```
-
 Deno provides the global namespace for most Deno specific APIs that are not available in the browser. A Unix cat program could be implemented as follows:
 ```
 /* cat.ts */
@@ -140,7 +106,6 @@ The above Deno.copy function works in the similar way as Go's io.Copy, where std
 ```
 deno run --allow-read cat.ts myfile
 ```
-
 The following Deno script implements a basic HTTP server:
 ```
 // Imports `serve` from the remote Deno standard library, using URL.
@@ -151,7 +116,6 @@ for await (const req of serve({ port: 8000 })) {
     req.respond({ body: "Hello World\n" });
 }
 ```
-
 When running this program, Deno would automatically download and cache the remote standard library files and compile the code. Similarly, we can run a standard library script (such as a file server) directly without explicitly downloading, by providing the URL as input filename (-A turns on all permissions):
 ```
 $ deno run -A https://deno.land/std/http/file_server.ts
@@ -163,22 +127,11 @@ HTTP server listening on http://0.0.0.0:4500/
 
 
 
-## What’s Deno, and how is it different from Node.js?
 
 ### Do I have to import it by the URL all the time?
-Constantly typing URLs would be very tedious. Thankfully, Deno presents us with two options to avoid doing that.
-The first option is to re-export the imported module from a local file, like so:
 ```
 export { test, assertEquals } from "https://deno.land/std/testing/mod.ts";
 ```
-Let’s say the file above is called local-test-utils.ts. Now, if we want to again make use of either test or assertEquals functions, we can just reference it like this:
-```
-import { test, assertEquals } from './local-test-utils.ts';
-```
-So it doesn’t really matter if it’s loaded from a URL or not.
-
-
-The second option is to create an imports map, which we specify in a JSON file:
 ```
 {
    "imports": {
@@ -186,20 +139,6 @@ The second option is to create an imports map, which we specify in a JSON file:
    }
 }
 ```
-And then import it as such:
-```
-import { serve } from "http/server.ts";
-```
-In order for it to work, we have to tell Deno about the imports map by including the --importmap flag:
-```
-deno run --importmap=import_map.json hello_server.ts
-```
-
-### What about package versioning?
-Versioning has to be supported by the package provider, but from the client side it comes down to just setting the version number in the URL like so: https://unpkg.com/liltest@0.0.5/dist/liltest.js.
-
-> With it’s decentralized approach, it takes the necessary step of freeing the JavaScript ecosystem from the centralized package registry that is npm.
-
 
 
 ---
@@ -207,18 +146,6 @@ Versioning has to be supported by the package provider, but from the client side
 
 ---
 
-https://medium.com/lean-mind/deno-node-js-killer-718c8969770b
-#### What are the main issues with Node.js?
-##### Any program can write to the filesystem and the network
-##### Bad ageing async APIs
-##### The build system (GYP)
-##### The module system and npm
-#### Deno’s top features
-##### Security
-##### Module system
-##### TypeScript support out of the box
-
----
 
 https://dev.to/lsagetlethias/deno-first-approach-4d0
 
