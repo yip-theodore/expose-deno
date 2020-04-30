@@ -1,38 +1,62 @@
 # Deno
-Ryan Dahl - Node.js (2009)
-10 Things I Regret About Node.js - Ryan Dahl - JSConf EU (2 juin 2018)
+Deno est un environnement d'exécution JavaScript et TypeScript construit sur le moteur JavaScript V8 et le language de programmation Rust.  
+> Ryan Dahl - Node.js (2009)  
+[10 Things I Regret About Node.js - Ryan Dahl - JSConf EU (2 juin 2018)](https://www.youtube.com/watch?v=M3BM9TB-8yA)  
 version 1.0 - 13 mai 2020
 
 
+## Problèmes de Node
+- Avoir abandonné le concept des `Promises` lors de la conception pour les callbacks
+- L'utilisation de GYP, un système de compilation abandonné
+- Le dossier node_modules, et npm en tant que distribution centralisée intégrée dans les distributions de Node
+- Les extensions `.js` pouvant être omises, plus la complexité de l'algorithme de résolution de modules
+- N'exploite pas pleinement l'environnement sécurisé de V8 en offrant l'accès complet au disque et au réseau
+- Les erreurs non capturées n'arrêtent pas l'éxécution
+
+
+## Principales différences avec Node
+- Un exécutable unique `deno` (15 Mo), qui dispose d'une large bibliothèque de modules standards `deno/std`
+- Utilise le système de module ES Module là où Node utilise CommonJS
+- Les dépendances peuvent être chargées aux travers d'URLs, l'utilisation d'un gestionnaire de paquets (npm) et du `package.json` ne sont donc plus nécessaires
+- Tous les modules téléchargés sont cachés localement, et peuvent être rechargés
+- Compatible avec le navigateur en supportant toutes les APIs Web
+- Supporte TypeScript par défaut
+- Permet un contrôl précis des permissions comme l'accès au système de fichiers et au réseau
+- Écrit en Rust (après une première version en Go) alors que Node est en C et C++, plus le système de boucle d’évènements interne utilisé est celle de Rust: Tokio, au lieu de libuv pour Node
+- Des sous-commandes utilitaires intégrées, comme un inspecteur de dépendances `deno info` ou un debugger `--debug`
+
+
 ## Exécutable unique
-deno (15 Mo)
-Bibliothèque standard (deno/std)
+- [x] deno (15 Mo)
+- [x] Bibliothèque standard (deno/std)
 
 ## Sécurité
-~~Node: pas~~ besoin d'autorisation explicite pour accéder au système de fichier ou au réseau
+- [x] ~~Node: pas~~ besoin d'autorisation explicite pour accéder au système de fichier ou au réseau
 
 ## Expérience développeur
 ### Typescript
-supporté par défaut
+- [x] supporté par défaut
 ### Sous-commandes utilitaires
-info, fmt, bundle, types, test, --debug, lint
+- [x] info, fmt, bundle, types, test, --debug, lint
 ### Gestion des erreurs
-~~Node: erreurs non capturées ignorées~~ stoppe toujours l’exécution
+- [x] ~~Node: erreurs non capturées ignorées~~ stoppe toujours l’exécution
+### Meilleure compatibilité avec le navigateur
+- [x] oui
 
 ## Fonctionnement interne
 ### Asynchrone
-~~Node: callback~~ Basé sur les promesses
+- [x] ~~Node: callback~~ Basé sur les promesses
 ### Écrit en
-~~Node: GYP~~
-[V8, ~~Go~~>Rust, et Tokio]
-~~Node: C C++~~ Rust
-~~Node: libuv~~ Tokio (Rust)
+- [x] ~~Node: GYP~~
+- [x] [V8, ~~Go~~>Rust, et Tokio]
+- [x] ~~Node: C C++~~ Rust
+- [x] ~~Node: libuv~~ Tokio (Rust)
 
 ## Gestion des dépendances
-~~Node: package.json~~
-~~Node: npm (distribution centralisée)~~
-syntaxe import au lieu de require (ES Modules) + url HTTP
-le code distant est mis en cache (indéfiniment sauf --reload)
+- [x] ~~Node: package.json~~
+- [x] ~~Node: npm (distribution centralisée)~~
+- [x] syntaxe import au lieu de require (ES Modules) + url HTTP
+- [x] le code distant est mis en cache (indéfiniment sauf --reload)
 
 
 ---
@@ -62,12 +86,12 @@ Deno was announced on JSConf EU 2018 by Ryan Dahl in his talk "10 Things I Regre
 Deno was initially written in Go and used Protocol Buffers for serialization between privileged (Go, with system call access) and unprivileged (V8) sides.[10] However, Go was soon replaced with Rust due to concerns of double runtime and garbage collection pressure.[11] Tokio is introduced in place of libuv as the asynchronous event-driven platform,[12] and Flatbuffers is adopted for faster, "zero-copy" serialization and deserialization[13] but later in August 2019, FlatBuffers were finally removed[14] after publishing benchmarks that measured a significant overhead of serialization in April 2019.[15]
 A standard library, modeled after Go's standard library, was created in November 2018 to provide extensive tools and utilities, partially solving Node.js' dependency tree explosion problem.[16]
 
-> avoir abandonné le concept des promesses lors de la conception
-> l'utilisation de GYP, système de compilation abandonné
-> node_modules et le package.json
-> les extensions de fichier
-> résolution des modules magique et l'index.js
-> casse l'environnement sécurisé de V8
+> - [x] avoir abandonné le concept des promesses lors de la conception
+> - [x] l'utilisation de GYP, système de compilation abandonné
+> - [x] node_modules et le package.json
+> - [x] les extensions de fichier
+> - [x] résolution des modules magique et l'index.js
+> - [x] casse l'environnement sécurisé de V8
 
 > Go + Protocol Buffers
 > ~~Go~~ > Rust
@@ -93,14 +117,14 @@ Deno mainly deviates from Node.js in the following aspects[7]:
 > Architecture événementielle, série d'utilitaires entrées-sorties non bloquants
 > boucle d’événement interne, interface en ligne de commande, utilitaires système
 
-> utilisation de ECMAScript Module pour système de module ~~CommonJS~~
-> utilisation des URLs pour charger les dépendances externes, similairement aux navigateurs
-> Supporte le TypeScript par défaut (snapshotted compiler?)
-> Meilleur compatibilité avec les navigateurs avec un large panel d'interfaces de programmation d'application Web
-> Permet de contrôler l'accès au système de fichiers et au réseau
-> Réécriture des API en utilisant les Promesses, ES6 et Typescript
-> Minimisation du poids du noyeau, en mettant à disposition une large bibliothèque de modules standard
-> Passage de messages pour les APIs du système privilégié et lien?
+> - [x] utilisation de ECMAScript Module pour système de module ~~CommonJS~~
+> - [x] utilisation des URLs pour charger les dépendances externes, similairement aux navigateurs
+> - [x] Supporte le TypeScript par défaut (snapshotted compiler?)
+> - [x] Meilleur compatibilité avec les navigateurs avec un large panel d'interfaces de programmation d'application Web
+> - [x] Permet de contrôler l'accès au système de fichiers et au réseau
+> - [x] Réécriture des API en utilisant les Promesses, ES6 et Typescript
+> - [x] Minimisation du poids du noyeau, en mettant à disposition une large bibliothèque de modules standard
+> - [ ] Passage de messages pour les APIs du système privilégié et lien?
 
 ## Example
 
@@ -199,7 +223,10 @@ https://dev.to/search?q=deno
 
 
 
-
+### Sources
+https://deno.land  
+https://www.youtube.com/watch?v=M3BM9TB-8yA  
+https://www.jesuisundev.com/deno-le-nouveau-nodejs  
 
 
 
