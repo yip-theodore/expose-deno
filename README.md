@@ -1,8 +1,14 @@
+
 # Deno
+
+<img align="left" width="120" src="https://github.com/denoland/deno_website2/blob/master/public/images/deno_logo_3.svg">
+
 Deno est un environnement d'exécution JavaScript et TypeScript construit sur le moteur JavaScript V8 et le language de programmation Rust.  
-> Ryan Dahl - Node.js (2009)  
-[10 Things I Regret About Node.js - Ryan Dahl - JSConf EU (2 juin 2018)](https://www.youtube.com/watch?v=M3BM9TB-8yA)  
-version 1.0 - 13 mai 2020
+
+Deno a été crée par Ryan Dahl, l'auteur de Node.js en 2009, et a été dévoilé lors de la JSConf EU de 2018 dans sa présentation 
+["10 choses que je regrette à propos de Node.js"](https://www.youtube.com/watch?v=M3BM9TB-8yA).  
+
+La sortie de la version 1.0 est prévu au 13 mai 2020.
 
 
 ## Problèmes de Node
@@ -29,7 +35,7 @@ version 1.0 - 13 mai 2020
 ## Installation
 [Voir ici](https://deno.land)
 
-## Example
+## Exemples
 
 The following runs a basic Deno script without any read/write/network permissions (sandbox mode):
 > Exécute un simple script Deno sans aucune permission de lecture, d'écriture, ou d'accès réseau, (en mode bac à sable)
