@@ -37,11 +37,6 @@ La sortie de la version 1.0 est prévu au 13 mai 2020.
 
 ## Exemples
 
-Avec cette ligne de commande, Deno va aller télécharger le script distant ainsi que ses dépendances, les mettre en cache, puis compiler le code:
-```bash
-$ deno https://deno.land/std/examples/welcome.ts
-```
-
 Ce script implémente un serveur HTTP basique:
 ```javascript
 import { serve } from "https://deno.land/std@v0.36.0/http/server.ts";
@@ -53,15 +48,15 @@ for await (const req of s) {
 ```
 Le script nécessite la permission explicite d'accéder au réseau:
 ```bash
-$ deno http_server.ts
+$ deno example.ts
 error: Uncaught PermissionDenied: network access to "0.0.0.0:8000", run again with the --allow-net flag
 ```
 On peut le lui préciser en ligne de commande:
 ```bash
-$ deno --allow-net http_server.ts
+$ deno --allow-net example.ts
 ```
 
-Exemple d'implémentation du programme Unix `cat`:
+Exemple d'implémentation du programme Unix `cat` pour afficher le contenu d'un fichier:
 ```javascript
 for (let i = 0; i < Deno.args.length; i++) {
   let filename = Deno.args[i];
@@ -70,10 +65,11 @@ for (let i = 0; i < Deno.args.length; i++) {
   file.close();
 }
 ```
-Pour afficher le contenu d'un fichier:
+On peut également lui passer directement l'URL du script:
 ```bash
-$ deno --allow-read=./ cat.ts README.md
+$ deno --allow-read https://deno.land/std/examples/cat.ts README.md
 ```
+Deno va aller télécharger les fichiers distants, mettre en cache, compiler le code, pour ensuite l'éxécuter.
 
 
 
@@ -84,22 +80,5 @@ https://www.jesuisundev.com/deno-le-nouveau-nodejs
 https://dev.to/lsagetlethias/deno-first-approach-4d0  
 https://en.wikipedia.org/wiki/Deno_(software)  
 https://www.developpez.com/actu/208629/JSConf-Berlin-2018-moins-Ryan-Dahl-liste-10-erreurs-de-conception-sur-Node-js-et-devoile-son-prototype-deno/  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
