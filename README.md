@@ -37,74 +37,43 @@ La sortie de la version 1.0 est prévu au 13 mai 2020.
 
 ## Exemples
 
-The following runs a basic Deno script without any read/write/network permissions (sandbox mode):
-> Exécute un simple script Deno sans aucune permission de lecture, d'écriture, ou d'accès réseau, (en mode bac à sable)
+Avec cette ligne de commande, Deno va aller télécharger le script distant ainsi que ses dépendances, les mettre en cache, puis compiler le code:
+```bash
+$ deno https://deno.land/std/examples/welcome.ts
 ```
-deno run main.ts
-```
-Explicit flags are required to expose corresponding permission:
-> option explicite pour accorder des permissions
-> --allow-read=/tmp, --allow-net=google.com, --allow-write, --allow-run, --allow-env
-```
-deno run --allow-read --allow-net main.ts
-```
-To inspect the dependency tree of the script, use the `info` subcommand:
-> Inspecter l'arbre de dépendances d'un script avec la sous-commande info
-```
-deno info main.ts
-```
-A basic hello-world program in Deno looks like the following (as in Node.js):
-```
-console.log("Hello world");
-```
-Deno provides the global namespace for most Deno specific APIs that are not available in the browser. A Unix cat program could be implemented as follows:
-> Exemple d'implémentation du programme Unix cat
-> Les APIs de Deno sont exposées dans l'objet Deno
-> top-level await est supporté
-> Récupère les arguments de la ligne de commande
-> zero-copy
-```
-/* cat.ts */
 
-/* Deno APIs are exposed through the `Deno` namespace. */
-const { stdout, open, copy, args } = Deno;
-
-// Top-level await is supported
-for (let i = 0; i < args.length; i++) {
-    const filename = args[i]; // Obtains command-line arguments.
-    const file = await open(filename); // Opens the corresponding file for reading.
-    await copy(stdout, file); // Performs a zero-copy asynchronous copy from `file` to `stdout`.
+Ce script implémente un serveur HTTP basique:
+```javascript
+import { serve } from "https://deno.land/std@v0.36.0/http/server.ts";
+const s = serve({ port: 8000 });
+console.log("http://localhost:8000/");
+for await (const req of s) {
+  req.respond({ body: "Hello World\n" });
 }
 ```
-The above Deno.copy function works in the similar way as Go's io.Copy, where stdout (standard output) is the destination Writer and file is the source Reader. To run this program, we need to provide the read permission to the filesystem:
+Le script nécessite la permission explicite d'accéder au réseau:
+```bash
+$ deno http_server.ts
+error: Uncaught PermissionDenied: network access to "0.0.0.0:8000", run again with the --allow-net flag
 ```
-deno run --allow-read cat.ts myfile
+On peut le lui préciser en ligne de commande:
+```bash
+$ deno --allow-net http_server.ts
 ```
-The following Deno script implements a basic HTTP server:
-> Ce script Deno implémente un serveur HTTP basique
-> Importe serve de la bibliothèque standard Deno en utilisant l'URL
-> Un itérateur qui retourne un flux de requêtes
-```
-// Imports `serve` from the remote Deno standard library, using URL.
-import { serve } from "https://deno.land/std@v0.21.0/http/server.ts";
 
-// `serve` function returns an asynchronous iterator, yielding a stream of requests
-for await (const req of serve({ port: 8000 })) {
-    req.respond({ body: "Hello World\n" });
+Exemple d'implémentation du programme Unix `cat`:
+```javascript
+for (let i = 0; i < Deno.args.length; i++) {
+  let filename = Deno.args[i];
+  let file = await Deno.open(filename);
+  await Deno.copy(file, Deno.stdout);
+  file.close();
 }
 ```
-When running this program, Deno would automatically download and cache the remote standard library files and compile the code. Similarly, we can run a standard library script (such as a file server) directly without explicitly downloading, by providing the URL as input filename (-A turns on all permissions):
-> Deno va automatiquement télécharger et mettre en cache les fichiers distants, puis compiler le code
-> En passant une URL en tant que chemin du script à exécuter, -A donne toutes les permissions
+Pour afficher le contenu d'un fichier:
+```bash
+$ deno --allow-read=./ cat.ts README.md
 ```
-$ deno run -A https://deno.land/std/http/file_server.ts
-Download https://deno.land/std/http/file_server.ts
-Compile https://deno.land/std/http/file_server.ts
-...
-HTTP server listening on http://0.0.0.0:4500/
-```
-
-
 
 
 
