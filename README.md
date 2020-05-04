@@ -2,7 +2,7 @@
 
 <img align="left" width="120" src="https://github.com/denoland/deno_website2/blob/master/public/images/deno_logo_3.svg">
 
-Deno est un environnement d'exécution JavaScript et TypeScript construit sur le moteur JavaScript V8 et le language de programmation Rust.  
+Deno est un environnement d'exécution JavaScript et TypeScript construit sur le moteur JavaScript V8 et le langage de programmation Rust.  
 
 Deno a été crée par Ryan Dahl, l'auteur de Node.js, et a été dévoilé pendant la JSConf EU 2018 lors de sa présentation 
 ["10 choses que je regrette à propos de Node.js"](https://www.youtube.com/watch?v=M3BM9TB-8yA).  
@@ -13,7 +13,7 @@ La sortie de la version 1.0 est prévu pour le 13 mai 2020.
 ## Erreurs de conception de Node
 - L'abandon des promesses vers le début du projet
 - Un manque de sécurité
-- La dépendance au système du compilation GYP
+- La dépendance au système de compilation GYP
 - L'intégration du `package.json`, et du gestionnaire de paquets centralisé NPM
 - La redondance des dossiers `node_modules`
 - La complexité de l'algorithme de résolution de modules
@@ -34,7 +34,7 @@ La sortie de la version 1.0 est prévu pour le 13 mai 2020.
 
 Voici un exemple d'implémentation d'un serveur HTTP basique:
 ```javascript
-/* exemple.ts */
+/* example.ts */
 import { serve } from "https://deno.land/std@v0.36.0/http/server.ts";
 const s = serve({ port: 8000 });
 console.log("http://localhost:8000/");
@@ -61,7 +61,7 @@ for (let i = 0; i < Deno.args.length; i++) {
   file.close();
 }
 ```
-On peut également lui passer une URL comme chemin du script à éxécuter:
+On peut également lui passer une URL comme chemin du script à exécuter:
 ```bash
 $ deno --allow-read https://deno.land/std/examples/cat.ts README.md
 ```
